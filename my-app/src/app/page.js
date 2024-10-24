@@ -2,47 +2,57 @@
 
 import Image from "next/image";
 import { useState, useEffect } from 'react';
+import RequestUserAccess from './components/RequestUserAccess';
+import RequestAccessToken from "./components/RequestAccessToken";
 
 export default function Home() {
-  const apiKey= process.env.SPOTIFY_API_KEY;
+  const secret = process.env.NEXT_PUBLIC_SPOTIFY_SECRET;
   const apiPrefix = "https://api.spotify.com/v1/"
-  const [topTracks, setTopTracks] = useState([]);
+  let token = localStorage.getItem('access_token')
+  
+  
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [apiKey, setApiKey] = useState('');
 
   useEffect(() => {
-    const fetchTracks = async () => {
-      const fetchedTracks = await getTopTracks();
-      setTopTracks(fetchedTracks);
+    RequestAccessToken(updateKey)
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = fetch('/api/spotify');
+        const result = await response.json();
+        setData(result);
+      } catch(error) {
+        setError(error.message)
+      }
     }
-    
-    fetchTracks();
-  }, []);
 
+    if(apiKey) {
+      fetchData()
+    }
+  },[apiKey])
 
-
-
-  const connectApi = async (endpoint, method, body) => {
-    const res = await fetch(apiPrefix + endpoint, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-      method,
-      body:JSON.stringify(body)
-    });
-    return await res.json();
+  const updateKey = (key) => {
+    setApiKey(key);
   }
 
+  const updateData = (data) => {
+    setData(data);
+  }
   
-
-  const getTopTracks = async () => {
-    return (await connectApi('me/top/tracks?time_range=long_term&limit=5', 'GET')).items;
-  } 
-
   return (
     <div>
-      <h1>Spitify</h1>
-      {topTracks?.map(({name, artists}) => <div>{name} by {artists.map(artist => artist.name).join(', ')}</div>)}
+      <h1>Spitify Fetched Data:</h1>
+      <button onClick={RequestUserAccess}>Request User Access</button>
+      <p>Api Key: {apiKey}</p>
+      <p>Token: {token}</p>
     </div>
   )
 }
 
 //{topTracks.map(({name, artists}) => <div>{name} by {artists.map(artist => artist.name).join(', ')}</div>)}
+//<pre>{JSON.stringify(data, null, 2)}</pre>
