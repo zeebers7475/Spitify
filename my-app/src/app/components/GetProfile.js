@@ -4,15 +4,15 @@ import { useState, useEffect } from "react"
 
 const GetProfile = (props) => {
 
-    const token = props.token;
+    const token = localStorage.getItem("access_token");
     const[profile, setProfile] = useState(null);
     const[error, setError] = useState(null);
 
     const fetchProfile = async (token) => {
         try {
-            const result = await fetch("https://spotify.com/v1/me", {
+            const result = await fetch("https://api.spotify.com/v1/me", {
                 method: "GET",
-                headers: { Aithorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${token}` },
             });
             const response = await result.json();
             return response;
@@ -23,6 +23,7 @@ const GetProfile = (props) => {
     }
 
     useEffect(() => {
+        console.log("useEffect: " + token)
         if(token) {
             fetchProfile(token).then((data) => {
                 if(data) {
@@ -32,13 +33,16 @@ const GetProfile = (props) => {
         }
     }, [token])
 
-    if(error) return <p>Error: {error}</p>;
+    if(error) return <p>Get Profile Error: {error}</p>;
     if(!profile) return <p>Loading...</p>;
+    console.log(profile)
 
     return (
         <div>
             <h1>Profile</h1>
-            <pre>{JSON.stringify(profile, null, 2)}</pre>
+            <p>{profile.display_name}</p>
+            <img src={profile.images[0].url} />
+            
         </div>
     )
 }
