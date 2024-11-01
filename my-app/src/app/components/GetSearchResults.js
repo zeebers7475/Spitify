@@ -1,21 +1,26 @@
-import { useState } from "react"
+import { useEffect } from "react"
 import { fetchSearchResults } from "./ApiCalls";
 
 const token = localStorage.getItem("access_token")
 const GetSearchResults = (props) => {
 
 
-    if(token) {
-        fetchSearchResults(props.searchingFor)
-        .then((data) => {
-            if(data) {
-                props.changeSearchResults(data)
-            }
-        });
-    }
-
+    useEffect(() => {
+        if(token && props.allowSearch) {
+            fetchSearchResults(props.searchingFor)
+            .then((data) => {
+                if(data) {
+                    console.log(data)
+                    props.changeSearchResults(data)
+                    props.toggleAllowSearch(false);
+                }
+            });
+        }
+    }, [props.allowSearch])
+    
     return (
         <div>
+            <h3>Results</h3>
             <p>{props.searchResults}</p>
         </div>
     )

@@ -8,14 +8,20 @@ const SearchBar = (props) => {
         props.changeSearchingFor(e.target.value)
     }
 
+
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        console.log(props.searchingFor)
-        if(props.searchingFor === '') {
-            props.changeSearchResults("Need something to search")
-        } else {
-            GetSearchResults();
+        props.toggleAllowSearch(true)
+
+        if(props.allowSearch) {
+            if(props.searchingFor === '') {
+                props.changeSearchResults("Need something to search")
+                props.toggleAllowSearch();
+            } else {
+                GetSearchResults();
+            }
         }
+        
         
 
     }

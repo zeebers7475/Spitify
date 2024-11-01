@@ -5,8 +5,9 @@ const token = localStorage.getItem("access_token")
 export const fetchSearchResults = async (searchingFor) => {
     let endpoint = "search?q="
     const apiUrl = encodeURI(encodeURI(`${api}${endpoint}${encodeURIComponent(searchingFor)}`))
+    const categories = '&type=track&limit=5'
     try {
-        const results = await fetch(apiUrl, {
+        const results = await fetch(apiUrl + categories, {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
             
