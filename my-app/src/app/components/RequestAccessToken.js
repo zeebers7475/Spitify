@@ -1,6 +1,6 @@
 
 
-const RequestAccessToken = (changeToken) => {
+const RequestAccessToken = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
@@ -28,8 +28,7 @@ const RequestAccessToken = (changeToken) => {
         const body = await fetch("https://accounts.spotify.com/api/token", payload)
         try {
             const response = await body.json();
-            changeToken(response.access_token)
-            localStorage.setItem('access_token', response.access_token);
+            return localStorage.setItem('access_token', response.access_token);
             
         } catch (err) {
             console.error("Error fetching access token:", err.message);

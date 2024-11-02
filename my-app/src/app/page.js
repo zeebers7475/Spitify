@@ -8,15 +8,18 @@ import RequestUserAuth from "./components/RequestUserAuth"
 import GetProfile from "./components/GetProfile";
 import SearchBar from "./components/ui/SearchBar";
 import GetSearchResults from "./components/GetSearchResults";
-import { fetchProfile2, fetchSearchResults } from "./components/ApiCalls";
+import { fetchPlaylists, fetchPlaylistTracks, fetchProfile2, fetchSearchResults } from "./components/ApiCalls";
+import GetPlaylists from "./components/GetPlaylists";
 
 
 export default function Home() {
 
-  const [token, setToken] = useState(null);
+  const token = localStorage.getItem("access_token");
   const [searchingFor, setSearchingFor] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
   const [allowSearch, setAllowSearch] = useState(false);
+  const [playlists, setPlaylists] = useState(null);
+  const [playlistTracks, setPlaylistTracks] = useState(null);
 
   const changeToken = (newToken) => {
     setToken(newToken)
@@ -39,7 +42,17 @@ export default function Home() {
     RequestAccessToken(changeToken);
   },[])
 
-  console.log("Search Results: " + JSON.stringify(searchResults))
+  useEffect(() => {
+    if(token) {
+      fetchPlaylists().then(data => {
+        if(data) {
+          return setPlaylists(data)
+        }
+      })
+    }
+  }, [])
+
+  
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -49,8 +62,18 @@ export default function Home() {
       <SecondaryButton handleOnClick={RequestAccessToken} buttonName='Secondary Button: Request Access Token' />
       <GetProfile token={token} />
       <GetSearchResults searchingFor={searchingFor} changeSearchResults={changeSearchResults} searchResults={searchResults} allowSearch={allowSearch} toggleAllowSearch={toggleAllowSearch} />
+      <GetPlaylists playlists={playlists} />
     </div>
   );
 
 
 }
+
+
+// .then((data) => {
+//   if(data.items) {
+//     data.items.map(eachPlaylist => {
+//       setPlaylistTracks([ ...prev, eachPlaylist.tracks.href])
+//     })
+//   }
+// })

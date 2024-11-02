@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { fetchProfile } from "./ApiCalls";
 
 const GetProfile = (props) => {
 
@@ -8,24 +9,9 @@ const GetProfile = (props) => {
     const[profile, setProfile] = useState(null);
     const[error, setError] = useState(null);
 
-    const fetchProfile = async (token) => {
-        try {
-            const result = await fetch("https://api.spotify.com/v1/me", {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const response = await result.json();
-            return response;
-        } catch (err) {
-            setError(err.message);
-            return null;
-        }
-    }
-
     useEffect(() => {
-        console.log("useEffect: " + token)
         if(token) {
-            fetchProfile(token).then((data) => {
+            fetchProfile(setError).then((data) => {
                 if(data) {
                     setProfile(data);
                 }
@@ -35,7 +21,6 @@ const GetProfile = (props) => {
 
     if(error) return <p>Get Profile Error: {error}</p>;
     if(!profile) return <p>Loading...</p>;
-    console.log(profile)
 
     return (
         <div>
