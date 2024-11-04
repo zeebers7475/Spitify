@@ -39,3 +39,9 @@ input.primary-button {
 input, input::placeholder {
   color:black;
 }
+
+.two-columns {
+  display:flex;
+  flex-direction:row;
+  justify-content: space-around;
+}
