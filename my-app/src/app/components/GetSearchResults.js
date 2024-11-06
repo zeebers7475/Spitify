@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { fetchSearchResults } from "./ApiCalls";
+import { json } from "mocha/lib/reporters";
 
 const token = localStorage.getItem("access_token")
 const GetSearchResults = (props) => {
@@ -26,7 +27,8 @@ const GetSearchResults = (props) => {
     }
 
     const handleSongsToAdd = (e) => {
-        console.log(e.target.value)
+        let value = e.target.value;
+        console.log(value[track.name])
     }
     
     if(!props.searchResults) {
@@ -47,7 +49,7 @@ const GetSearchResults = (props) => {
                         <p>Album: {track.album.name}</p>
                     </div>
                     <div>
-                        <button onClick={handleSongsToAdd} value={`${track.id}, ${track.name}, ${track.artists.map((artist) => artist.name + ' ')} ${track.album.name}`}>+</button>
+                        <button onClick={handleSongsToAdd} value={{"track.id": track.id, "track.name": track.name, "track.artists": track.artists, "track.album.name": track.album.name}}>+</button>
                     </div>
                     
                 </div>
