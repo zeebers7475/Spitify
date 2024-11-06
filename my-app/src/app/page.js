@@ -13,6 +13,7 @@ import GetPlaylists from "./components/GetPlaylists";
 import Loading from "./components/ui/Loading";
 import LeftColumn from "./layout/LeftColumn";
 import RightColumn from "./layout/RightColumn";
+import CreatePlaylist from "./components/CreatePlaylist";
 
 
 export default function Home() {
@@ -23,6 +24,8 @@ export default function Home() {
   const [allowSearch, setAllowSearch] = useState(false);
   const [playlists, setPlaylists] = useState(null);
   const [playlistTracks, setPlaylistTracks] = useState(null);
+  const [addingSongs, setAddingSongs] = useState(false)
+  const [songsToAdd, setSongsToAdd] = useState(null)
 
   const changeToken = (newToken) => {
     setToken(newToken)
@@ -39,6 +42,14 @@ export default function Home() {
   const toggleAllowSearch = (boolean) => {
     setAllowSearch(boolean)
     
+  }
+
+  const changeAddingSongs = (boolean) => {
+    setAddingSongs(boolean)
+  }
+
+  const changeSongsToAdd = (songList) => {
+    setSongsToAdd([...prev, songList])
   }
 
   useEffect(() => {
@@ -62,6 +73,7 @@ export default function Home() {
         <PrimaryButton handleOnClick={RequestUserAuth} buttonName='Primary Button: Request User Auth' />
         <SecondaryButton handleOnClick={RequestAccessToken} buttonName='Secondary Button: Request Access Token' />
         <GetProfile token={token} />
+        <SecondaryButton handleOnClick={() => changeAddingSongs(true)} buttonName='Create a Playlist' />
       </div>
       <div className="two-columns">
         <LeftColumn>
@@ -69,7 +81,8 @@ export default function Home() {
           <GetSearchResults searchingFor={searchingFor} changeSearchResults={changeSearchResults} searchResults={searchResults} allowSearch={allowSearch} toggleAllowSearch={toggleAllowSearch} />
         </LeftColumn>
         <RightColumn>
-          {playlists !== null ? <GetPlaylists playlists={playlists} /> : <Loading title="Playlists" />}
+          {playlists !== null && !addingSongs ? <GetPlaylists playlists={playlists} /> : <Loading title="Playlists" />}
+          {playlists !== null && addingSongs ? <CreatePlaylist addingSongs={addingSongs} changeAddingSongs={changeAddingSongs} changeSongsToAdd={changeSongsToAdd} /> : <Loading title="Playlists" />}
         </RightColumn>
       </div>
     </>

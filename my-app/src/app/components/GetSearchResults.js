@@ -20,6 +20,14 @@ const GetSearchResults = (props) => {
     const handleOnClick = () => {
         console.log("Added to Paylist List")
     }
+
+    const listArtists = (data) => {
+        return data.artists.map((artist, index) => <li key={data.id + index}>{artist.name}</li>)
+    }
+
+    const handleSongsToAdd = (e) => {
+        console.log(e.target.value)
+    }
     
     if(!props.searchResults) {
         return (
@@ -32,17 +40,23 @@ const GetSearchResults = (props) => {
         const br = <br />;
         const searchList = props.searchResults.map((track) => {
             return (
-                <div key={track.id}>
-                    <p>Song: {track.name}</p>
-                    <ul>Artists: {track.artists.map((artist, index) => <li key={track.id + index}>{artist.name}</li>)}</ul>
-                    <p>Album: {track.album.name}</p>
+                <div className="search-result" key={track.id}>
+                    <div>
+                        <p>Song: {track.name}</p>
+                        <ul>Artists: {listArtists(track)}</ul>
+                        <p>Album: {track.album.name}</p>
+                    </div>
+                    <div>
+                        <button onClick={handleSongsToAdd} value={`${track.id}, ${track.name}, ${track.artists.map((artist) => artist.name + ' ')} ${track.album.name}`}>+</button>
+                    </div>
+                    
                 </div>
             )})
 
         return (
             <div>
             <h3>Results</h3>
-            <button onClick={handleOnClick}>{searchList}</button>
+            <div>{searchList}</div>
         </div>
         )
     }
