@@ -24,8 +24,10 @@ export default function Home() {
   const [allowSearch, setAllowSearch] = useState(false);
   const [playlists, setPlaylists] = useState(null);
   const [playlistTracks, setPlaylistTracks] = useState(null);
-  const [addingSongs, setAddingSongs] = useState(false)
-  const [songsToAdd, setSongsToAdd] = useState(null)
+  const [addingSongs, setAddingSongs] = useState(false);
+  const [songsToAdd, setSongsToAdd] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [playlistTitle, setPlaylistTitle] = useState('')
 
   const changeToken = (newToken) => {
     setToken(newToken)
@@ -49,7 +51,20 @@ export default function Home() {
   }
 
   const changeSongsToAdd = (songList) => {
-    setSongsToAdd([...prev, songList])
+    
+    let dupe = songsToAdd.find((eachSong) => eachSong.key === songList.key)
+    if(!dupe) {
+      setSongsToAdd((prev) => [...prev, songList])
+    } else alert("That song was already added")
+
+  }
+
+  const changeProfile = (profile) => {
+    setProfile(profile)
+  }
+
+  const changePlaylistTitle = (title) => {
+    setPlaylistTitle(title)
   }
 
   useEffect(() => {
@@ -68,34 +83,25 @@ export default function Home() {
 
   return (
     <>
-      <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <div className="grid grid-rows-[1fr] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
         <h1>Spitify</h1>
         <PrimaryButton handleOnClick={RequestUserAuth} buttonName='Primary Button: Request User Auth' />
-        <SecondaryButton handleOnClick={RequestAccessToken} buttonName='Secondary Button: Request Access Token' />
-        <GetProfile token={token} />
+        <GetProfile token={token} profile={profile} changeProfile={changeProfile} />
         <SecondaryButton handleOnClick={() => changeAddingSongs(true)} buttonName='Create a Playlist' />
       </div>
       <div className="two-columns">
         <LeftColumn>
           <SearchBar changeSearchingFor={changeSearchingFor} searchingFor={searchingFor} changeSearchResults={changeSearchResults} allowSearch={allowSearch} toggleAllowSearch={toggleAllowSearch}/>
-          <GetSearchResults searchingFor={searchingFor} changeSearchResults={changeSearchResults} searchResults={searchResults} allowSearch={allowSearch} toggleAllowSearch={toggleAllowSearch} />
+          <GetSearchResults searchingFor={searchingFor} changeSearchResults={changeSearchResults} searchResults={searchResults} allowSearch={allowSearch} toggleAllowSearch={toggleAllowSearch} changeSongsToAdd={changeSongsToAdd} />
         </LeftColumn>
         <RightColumn>
           {playlists !== null && !addingSongs ? <GetPlaylists playlists={playlists} /> : <Loading title="Playlists" />}
-          {playlists !== null && addingSongs ? <CreatePlaylist addingSongs={addingSongs} changeAddingSongs={changeAddingSongs} changeSongsToAdd={changeSongsToAdd} /> : <Loading title="Playlists" />}
+          {playlists !== null && addingSongs ? <CreatePlaylist addingSongs={addingSongs} changeAddingSongs={changeAddingSongs} profile={profile} songsToAdd={songsToAdd} playlistTitle={playlistTitle} changePlaylistTitle={changePlaylistTitle}/> : <Loading title="Playlists" />}
         </RightColumn>
       </div>
+      <footer>Spitify</footer>
     </>
   );
 
 
 }
-
-
-// .then((data) => {
-//   if(data.items) {
-//     data.items.map(eachPlaylist => {
-//       setPlaylistTracks([ ...prev, eachPlaylist.tracks.href])
-//     })
-//   }
-// })

@@ -32,7 +32,7 @@ const RequestUserAuth = async () => {
         
         
         
-        const scope = 'user-read-private user-read-email';
+        const scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
         const authUrl = new URL("https://accounts.spotify.com/authorize")
         
         // generated in the previous step

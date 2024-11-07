@@ -1,3 +1,4 @@
+import { profile } from "../page"
 
 const api = "https://api.spotify.com/v1/"
 const token = localStorage.getItem("access_token")
@@ -60,6 +61,49 @@ export const fetchPlaylistTracks = async (playlistApi) => {
     } catch (err) {
         console.log("Playlist Tracks Error: " + err.message);
         return null
+    }
+}
+
+export const fetchCreatePlaylist = async (profile, playlistTitle, songsToAdd) => {
+
+    const uris = songsToAdd.map(eachSong => eachSong.key)
+    let playlistId
+
+    const addItems = async (playlistId, uris) => {
+        const endpoint = `playlists/${playlistId}/tracks?uris=${uris.join(',')}`;
+        try {
+            const results = await fetch(api + endpoint, {
+                headers: { Authorization: `Bearer ${token}` },
+                method: "POST",
+            });
+            const response = await results.json()
+            return alert(response)
+        } catch (err) {
+            console.log("Tracks Playlist Error: " + err.message)
+            return null
+        }
+    } 
+
+    const endpoint = `users/${profile.id}/playlists`;
+    const body = {
+        "name": playlistTitle,
+        "description": "",
+        "public": false
+    }
+    try {
+        const results = await fetch(api + endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+        const response = await results.json()
+        console.log("Response: " + response)
+        return playlistId = response.id
+    } catch (err) {
+        console.log("Create Playlist Error: " + err.message)
+        return null
+    } finally {
+        addItems(playlistId, uris)
     }
 }
 

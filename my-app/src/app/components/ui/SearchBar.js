@@ -11,18 +11,13 @@ const SearchBar = (props) => {
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        props.toggleAllowSearch(true)
-
-        if(props.allowSearch) {
-            if(props.searchingFor === '') {
-                props.changeSearchResults("Need something to search")
-                props.toggleAllowSearch();
-            } else {
-                GetSearchResults();
-            }
-        }
         
-        
+        if(props.searchingFor === '') {
+            alert("Please enter something to search")
+            return null
+        } else {
+            props.toggleAllowSearch(true)
+        } 
 
     }
 
