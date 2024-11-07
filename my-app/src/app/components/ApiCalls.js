@@ -77,7 +77,7 @@ export const fetchCreatePlaylist = async (profile, playlistTitle, songsToAdd) =>
                 method: "POST",
             });
             const response = await results.json()
-            return alert(response)
+            return alert(`Your Playlist ${playlistTitle} has been created with ${songsToAdd.length} songs`)
         } catch (err) {
             console.log("Tracks Playlist Error: " + err.message)
             return null
@@ -97,7 +97,6 @@ export const fetchCreatePlaylist = async (profile, playlistTitle, songsToAdd) =>
             body: JSON.stringify(body),
         });
         const response = await results.json()
-        console.log("Response: " + response)
         return playlistId = response.id
     } catch (err) {
         console.log("Create Playlist Error: " + err.message)
